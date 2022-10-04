@@ -7,8 +7,9 @@ case object Playing extends GameState
 case object Draw extends GameState
 case class Winner(sign: Char) extends GameState
 
-class Board() {
-  private val board: Array[Array[String]] = Array.fill(6, 7)(" ")
+class Board(private val board: Array[Array[String]]) {
+
+  def this() = this(Array.fill(6, 7)(" "))
 
   def draw(): String = {
     val columnNumbers = " 1 2 3 4 5 6 7"
@@ -20,7 +21,7 @@ class Board() {
         |$horizontalSeparator""".stripMargin
   }
 
-  def play(p: Player, column: Int): Either[String, Board] = Right(this) //TODO
+  def play(p: Player, column: Int): Either[String, Board] = Right(new Board(board)) //TODO
 
   def gameState: GameState = Playing //TODO
 }

@@ -21,9 +21,9 @@ class BoardSpec extends AnyFunSpec {
 
   it("player 1 chooses a column") {
     val board = new Board()
-    board.play(Player('X', "P1"), 1)
-    board.draw() shouldBe
-      """ 1 2 3 4 5 6 7
+    val updated = board.play(Player('X', "P1"), 1)
+    updated.map(_.draw()) shouldBe
+      Right(""" 1 2 3 4 5 6 7
         |---------------
         || | | | | | | |
         || | | | | | | |
@@ -31,7 +31,7 @@ class BoardSpec extends AnyFunSpec {
         || | | | | | | |
         || | | | | | | |
         ||X| | | | | | |
-        |---------------""".stripMargin
+        |---------------""".stripMargin)
   }
 
 }
