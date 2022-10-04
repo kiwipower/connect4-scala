@@ -1,15 +1,19 @@
 package connect4
 
+import scala.collection.mutable.ArrayBuffer
+
 case class Player(sign: Char, name: String)
 
 sealed trait GameState
+
 case object Playing extends GameState
+
 case object Draw extends GameState
 case class Winner(sign: Char) extends GameState
 
-class Board(private val board: Array[Array[String]]) {
+class Board(private val board: ArrayBuffer[ArrayBuffer[String]]) {
 
-  def this() = this(Array.fill(6, 7)(" "))
+  def this() = this(ArrayBuffer.fill(7, 6)(" "))
 
   def draw(): String = {
     val columnNumbers = " 1 2 3 4 5 6 7"
@@ -17,7 +21,7 @@ class Board(private val board: Array[Array[String]]) {
 
     s"""|$columnNumbers
         |$horizontalSeparator
-        |${board.map(_.mkString("|", "|", "|")).mkString("\n|")}
+        |${board.transpose.map(_.mkString("|", "|", "|")).mkString("\n|")}
         |$horizontalSeparator""".stripMargin
   }
 
