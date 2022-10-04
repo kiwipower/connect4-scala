@@ -1,6 +1,6 @@
 package connect4
 
-import cats.effect.{ExitCode, IO, IOApp}
+import cats.effect.{IO, IOApp}
 import cats.syntax.all._
 
 import scala.io.StdIn
@@ -20,7 +20,7 @@ object GameRunner extends IOApp.Simple {
   def swapPlayer(p: Player): Player = if (p == p1) p2 else p1
 
   def eval(command: String, board: Board, p: Player): IO[Unit] =
-    if (command == null) IO.pure(ExitCode.Success) else dropCoin(board, p, command) match {
+    if (command == null) IO.unit else dropCoin(board, p, command) match {
       case Left(err)                          => IO(println(s"Err: $err"))                                        *> loop(board, p)
       case Right(b) if b.gameState == Playing => IO(println(b.draw()))                                            *> loop(b, swapPlayer(p))
       case Right(b)                           => IO(println(s"Game finished as ${b.gameState} : \n${b.draw()}"))  *> IO.unit

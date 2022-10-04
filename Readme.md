@@ -1,6 +1,15 @@
 # connect4 scala
 Connect4 in Scala! For interviewing people who know some scala.
-    
+
+## Playing
+```bash 
+> sbt run
+```
+
+## Run the tests
+```bash 
+> sbt test
+```
     
 ## User Requirements
 
