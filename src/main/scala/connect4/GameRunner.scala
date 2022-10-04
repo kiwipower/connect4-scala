@@ -6,11 +6,11 @@ import cats.syntax.all._
 import scala.io.StdIn
 import scala.util.matching.Regex
 
-object GameRunner extends IOApp {
+object GameRunner extends IOApp.Simple {
 
-  val p1 = Player('X', "Player1")
-  val p2 = Player('O', "Player2")
-  val selectColumn: Regex = "([1-7])".r
+  private val p1 = Player('X', "Player1")
+  private val p2 = Player('O', "Player2")
+  private val selectColumn: Regex = "([1-7])".r
 
   def dropCoin(b: Board, currentPlayer: Player, column: String): Either[String, Board] = column match {
     case selectColumn(c) => b.play(currentPlayer, c.toInt)
@@ -19,22 +19,19 @@ object GameRunner extends IOApp {
 
   def swapPlayer(p: Player): Player = if (p == p1) p2 else p1
 
-  def eval(command: String, board: Board, p: Player): IO[ExitCode] = IO.suspend {
+  def eval(command: String, board: Board, p: Player): IO[Unit] =
     if (command == null) IO.pure(ExitCode.Success) else dropCoin(board, p, command) match {
       case Left(err)                          => IO(println(s"Err: $err"))                                        *> loop(board, p)
       case Right(b) if b.gameState == Playing => IO(println(b.draw()))                                            *> loop(b, swapPlayer(p))
-      case Right(b)                           => IO(println(s"Game finished as ${b.gameState} : \n${b.draw()}"))  *> IO.pure(ExitCode.Success)
+      case Right(b)                           => IO(println(s"Game finished as ${b.gameState} : \n${b.draw()}"))  *> IO.unit
     }
-  }
 
-  def loop(board: Board, p: Player): IO[ExitCode] = IO.suspend {
+  def loop(board: Board, p: Player): IO[Unit] =
     for {
       _           <- IO(print(s"> Choose a column ${p.name}: "))
       line        <- IO(StdIn.readLine)
-      exitCode    <- eval(line, board, p)
-    } yield exitCode
-  }
+      _           <- eval(line, board, p)
+    } yield ()
 
-  def run(args: List[String]): IO[ExitCode] = loop(new Board(), p1)
-    .guaranteeCase(_ => IO(println("Bye!")))
+  def run: IO[Unit] = loop(new Board(), p1)
 }

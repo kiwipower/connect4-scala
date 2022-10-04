@@ -1,10 +1,10 @@
 package connect4.unit
 
 import connect4.{Board, Player}
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class BoardSpec extends FunSpec {
+class BoardSpec extends AnyFunSpec {
 
   it("draws an empty board") {
     new Board().draw() shouldBe
